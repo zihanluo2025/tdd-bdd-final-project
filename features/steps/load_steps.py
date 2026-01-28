@@ -46,7 +46,17 @@ def step_impl(context):
     #
     # load the database with new products
     #
+
     for row in context.table:
-        #
-        # ADD YOUR CODE HERE TO CREATE PRODUCTS VIA THE REST API
-        #
+        payload = {
+            "name": row["name"],
+            "description": row["description"],
+            "price": float(row["price"]),
+            "available": row["available"].lower() == "true"
+        }
+
+        rest_endpoint = f"{context.base_url}/products"
+        context.resp = requests.post(rest_endpoint, json=payload)
+
+        assert context.resp.status_code == HTTP_201_CREATED
+
